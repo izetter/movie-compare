@@ -1,11 +1,19 @@
 const input = document.querySelector('input');
-let delayTimeout = null;
 
-function delaySearch(evt) {
-	clearTimeout(delayTimeout);
-	delayTimeout = setTimeout(() => {
-		searchMovies(evt.target.value);
-	}, 1000);
+input.addEventListener('input', debounce(onInput, 500));
+
+function debounce(func, delay) {
+	let timeoutId = null;
+	return (...args) => {
+		clearTimeout(timeoutId);
+		timeoutId = setTimeout(() => {
+			func.apply(null, args);
+		}, delay);
+	};
+}
+
+function onInput(evt) {
+	searchMovies(evt.target.value);
 }
 
 async function searchMovies(searchString) {
@@ -36,4 +44,3 @@ async function findMovieById(imbdID) {
 	}
 }
 
-input.addEventListener('input', delaySearch);
