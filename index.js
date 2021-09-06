@@ -1,11 +1,11 @@
-
+const input = document.querySelector('input');
 let delayTimeout = null;
 
-function delaySearch(str) {
+function delaySearch(evt) {
 	clearTimeout(delayTimeout);
 	delayTimeout = setTimeout(() => {
-		searchMovies(str);
-	}, 500);
+		searchMovies(evt.target.value);
+	}, 1000);
 }
 
 async function searchMovies(searchString) {
@@ -36,7 +36,4 @@ async function findMovieById(imbdID) {
 	}
 }
 
-const input = document.querySelector('input');
-input.addEventListener('input', (evt) => delaySearch(evt.currentTarget.value));
-
-
+input.addEventListener('input', delaySearch);
