@@ -12,8 +12,9 @@ function debounce(func, delay) {
 	};
 }
 
-function onInput(evt) {
-	searchMovies(evt.target.value);
+async function onInput(evt) {
+	const searchResults = await searchMovies(evt.target.value);
+	console.log(searchResults);
 }
 
 async function searchMovies(searchString) {
@@ -24,11 +25,26 @@ async function searchMovies(searchString) {
 				s: searchString,
 			},
 		});
-		console.log(response.data);
+		return response.data.Search;
 	} catch (err) {
 		console.log(err);
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 async function findMovieById(imbdID) {
 	try {
