@@ -2,19 +2,22 @@ const input = document.querySelector('input');
 
 input.addEventListener('input', debounce(onInput, 500));
 
-function debounce(func, delay) {
-	let timeoutId = null;
-	return (...args) => {
-		clearTimeout(timeoutId);
-		timeoutId = setTimeout(() => {
-			func.apply(null, args);
-		}, delay);
-	};
-}
 
 async function onInput(evt) {
-	const searchResults = await searchMovies(evt.target.value);
-	console.log(searchResults);
+	const movies = await searchMovies(evt.target.value);
+	console.log(movies);
+
+	for (let movie of movies) {
+		const div = document.createElement('div');
+
+		div.innerHTML = `
+			<h1>${movie.Title}</h1>
+			<img src="${movie.Poster}">
+		`;
+
+		document.querySelector('#target').append(div);
+		console.log(`${movie.Poster}`);
+	}
 }
 
 async function searchMovies(searchString) {
@@ -45,6 +48,15 @@ async function searchMovies(searchString) {
 
 
 
+function debounce(func, delay) {
+	let timeoutId = null;
+	return (...args) => {
+		clearTimeout(timeoutId);
+		timeoutId = setTimeout(() => {
+			func.apply(null, args);
+		}, delay);
+	};
+}
 
 async function findMovieById(imbdID) {
 	try {
