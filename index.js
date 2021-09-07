@@ -22,13 +22,20 @@ async function onInput(evt) {
 
 async function searchMovies(searchString) {
 	try {
+
 		const response = await axios.get('http://www.omdbapi.com/', {
 			params: {
 				apikey: 'a23e8576',
 				s: searchString,
 			},
 		});
+
+		// The OMBD API response may contain a string property called "Error", which, if present, indicates that it couldn't find movies matching
+		// the searchString. It's not really an error though, the request is still succesful, it's just how they designed the API.
+		if (response.data.Error) return [];
+
 		return response.data.Search;
+
 	} catch (err) {
 		console.log(err);
 	}
