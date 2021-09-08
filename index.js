@@ -1,28 +1,23 @@
+
+// Writing HTML here to make this code more easily reusable
+const root = document.querySelector('.autocomplete');
+root.innerHTML = `
+	<label><b>Search for a movie</b><input type="text" class="input"></label>
+	<div class="dropdown">
+		<div class="dropdown-menu">
+			<div class="dropdown-content results"></div>
+		</div>
+	</div>
+`;
+
+const dropdown = document.querySelector('.dropdown');
+const resultsWrapper = document.querySelector('.results');
 const input = document.querySelector('input');
 
 input.addEventListener('input', debounce(onInput, 500));
 
-
-async function onInput(evt) {
-	const movies = await searchMovies(evt.target.value);
-	console.log(movies);
-
-	for (let movie of movies) {
-		const div = document.createElement('div');
-
-		div.innerHTML = `
-			<h1>${movie.Title}</h1>
-			<img src="${movie.Poster}">
-		`;
-
-		document.querySelector('#target').append(div);
-		console.log(`${movie.Poster}`);
-	}
-}
-
 async function searchMovies(searchString) {
 	try {
-
 		const response = await axios.get('http://www.omdbapi.com/', {
 			params: {
 				apikey: 'a23e8576',
@@ -35,9 +30,24 @@ async function searchMovies(searchString) {
 		if (response.data.Error) return [];
 
 		return response.data.Search;
-
 	} catch (err) {
 		console.log(err);
+	}
+}
+
+async function onInput(evt) {
+	const movies = await searchMovies(evt.target.value);
+
+	dropdown.classList.add('is-active');
+	for (let movie of movies) {
+		const option = document.createElement('a');
+		option.classList.add('dropdown-item');
+		option.innerHTML = `
+			<img src="${movie.Poster}">
+			${movie.Title}
+		`;
+
+		resultsWrapper.append(option);
 	}
 }
 
@@ -49,11 +59,7 @@ async function searchMovies(searchString) {
 
 
 
-
-
-
-
-
+//////////////////////////////////////////////////
 
 function debounce(func, delay) {
 	let timeoutId = null;
@@ -78,4 +84,3 @@ async function findMovieById(imbdID) {
 		console.log(err);
 	}
 }
-
