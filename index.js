@@ -15,12 +15,29 @@ const input = document.querySelector('input');
 const dropdown = document.querySelector('.dropdown');
 const resultsWrapper = document.querySelector('.results');
 
-input.addEventListener('input', debounce(onInput, 500));
+async function onInput(evt) {
+	const movies = await searchMovies(evt.target.value);
 
-// If user clicks anywhere other than the autocomplete div or any child element of it, close the autocomplete.
-document.addEventListener('click', (evt) => {
-	if (!root.contains(evt.target)) dropdown.classList.remove('is-active');
-});
+	if (movies.length === 0) {
+		dropdown.classList.remove('is-active');
+		return;
+	}
+
+	resultsWrapper.innerHTML = '';	// delete any previous results from the dropdown
+	dropdown.classList.add('is-active');
+	for (let movie of movies) {
+		const option = document.createElement('a');	// dropdown option
+		const posterSRC = movie.Poster === 'N/A' ? '' : movie.Poster;	// The API assings the string "N/A" when no poster URL is found
+
+		option.classList.add('dropdown-item');
+		option.innerHTML = `
+			<img src="${posterSRC}">
+			${movie.Title}
+		`;
+
+		resultsWrapper.append(option);
+	}
+}
 
 async function searchMovies(searchString) {
 	try {
@@ -41,24 +58,12 @@ async function searchMovies(searchString) {
 	}
 }
 
-async function onInput(evt) {
-	const movies = await searchMovies(evt.target.value);
+input.addEventListener('input', debounce(onInput, 500));
 
-	resultsWrapper.innerHTML = '';
-	dropdown.classList.add('is-active');
-	for (let movie of movies) {
-		const option = document.createElement('a');	// dropdown option
-		const posterSRC = movie.Poster === 'N/A' ? '' : movie.Poster;	// The API assings the string "N/A" when no poster URL is found
-
-		option.classList.add('dropdown-item');
-		option.innerHTML = `
-			<img src="${posterSRC}">
-			${movie.Title}
-		`;
-
-		resultsWrapper.append(option);
-	}
-}
+// If user clicks anywhere other than the autocomplete div or any child element of it, close the autocomplete.
+document.addEventListener('click', (evt) => {
+	if (!root.contains(evt.target)) dropdown.classList.remove('is-active');
+});
 
 
 
