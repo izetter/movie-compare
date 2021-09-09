@@ -17,6 +17,11 @@ const resultsWrapper = document.querySelector('.results');
 
 input.addEventListener('input', debounce(onInput, 500));
 
+// If user clicks anywhere other than the autocomplete div or any child element of it, close the autocomplete.
+document.addEventListener('click', (evt) => {
+	if (!root.contains(evt.target)) dropdown.classList.remove('is-active');
+});
+
 async function searchMovies(searchString) {
 	try {
 		const response = await axios.get('http://www.omdbapi.com/', {
