@@ -1,9 +1,10 @@
 
-// Writing HTML here to make this code more easily reusable
+// Writing HTML here to make this code more easily reusable as all the needed HTML for the search and autocomplete functionality
+// is created here in this file. Only the "root" variable needs to reference to an existing element created in the HTML file.
 const root = document.querySelector('.autocomplete');
 root.innerHTML = `
-	<label><b>Search for a movie</b></label>
-	<input type="text" class="input">
+	<label for="input"><b>Search for a movie</b></label>
+	<input type="text" class="input" id="input">
 	<div class="dropdown">
 		<div class="dropdown-menu">
 			<div class="dropdown-content results"></div>
@@ -23,7 +24,7 @@ async function onInput(evt) {
 		return;
 	}
 
-	resultsWrapper.innerHTML = '';	// delete any previous results from the dropdown
+	resultsWrapper.innerHTML = '';	// deletes any previous results from the dropdown, and therefore, their event listeners.
 	dropdown.classList.add('is-active');
 	for (let movie of movies) {
 		const option = document.createElement('a');	// dropdown option
@@ -34,11 +35,6 @@ async function onInput(evt) {
 			<img src="${posterSRC}">
 			<span>${movie.Title}</span>
 		`;
-
-		option.addEventListener('click', () => {
-			dropdown.classList.remove('is-active');
-			input.value = movie.Title;
-		});
 
 		resultsWrapper.append(option);
 	}
@@ -54,7 +50,7 @@ async function searchMovies(searchString) {
 		});
 
 		// If the OMBD API can't find any matching movies, its response will contain a string property called "Error",
-		// It's not really an error though, the request is still succesful, it's just how they designed the API.
+		// But it's not really an error though, the request is still succesful, it's just how they designed the API.
 		if (response.data.Error) return [];
 
 		return response.data.Search;
@@ -70,6 +66,14 @@ document.addEventListener('click', (evt) => {
 	if (!root.contains(evt.target)) dropdown.classList.remove('is-active');
 });
 
+// Event delegation to update input value with clicked movie title
+resultsWrapper.addEventListener('click', (evt) => {
+	const anchorTag = evt.target.closest('a');
+	if (resultsWrapper.contains(anchorTag)) {
+		dropdown.classList.remove('is-active');
+		input.value = anchorTag.querySelector('span').textContent;
+	}
+});
 
 
 
