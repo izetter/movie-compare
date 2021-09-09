@@ -18,7 +18,7 @@ const resultsWrapper = document.querySelector('.results');
 async function onInput(evt) {
 	const movies = await searchMovies(evt.target.value);
 
-	if (movies.length === 0) {
+	if (movies.length === 0) {	// hide the dropdown if searchMovies returns no matches (the empty array)
 		dropdown.classList.remove('is-active');
 		return;
 	}
@@ -32,8 +32,13 @@ async function onInput(evt) {
 		option.classList.add('dropdown-item');
 		option.innerHTML = `
 			<img src="${posterSRC}">
-			${movie.Title}
+			<span>${movie.Title}</span>
 		`;
+
+		option.addEventListener('click', () => {
+			dropdown.classList.remove('is-active');
+			input.value = movie.Title;
+		});
 
 		resultsWrapper.append(option);
 	}
