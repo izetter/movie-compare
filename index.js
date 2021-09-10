@@ -60,13 +60,14 @@ async function searchMovies(searchString) {
 	}
 }
 
-function onMovieSelect(evt) {
+async function onMovieSelect(evt) {
 	const option = evt.target.closest('a');
 	if (resultsWrapper.contains(option)) {
 		const span = option.querySelector('span');
 		input.value = span.textContent;
 		dropdown.classList.remove('is-active');
-		findMovieById(span.dataset.imdbid);
+		const movieDetails = await findMovieById(span.dataset.imdbid);
+		console.log(movieDetails);
 	}
 }
 
@@ -78,7 +79,7 @@ async function findMovieById(imbdID) {
 				i: imbdID,
 			},
 		});
-		console.log(response.data);
+		return response.data;
 	} catch (err) {
 		console.log(err);
 	}
