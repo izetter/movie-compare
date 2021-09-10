@@ -59,6 +59,16 @@ async function searchMovies(searchString) {
 	}
 }
 
+function onMovieSelect(evt) {
+	const option = evt.target.closest('a');
+	if (resultsWrapper.contains(option)) {
+		const span = option.querySelector('span');
+		input.value = span.textContent;
+		dropdown.classList.remove('is-active');
+		findMovieById(span.dataset.imdbid);
+	}
+}
+
 async function findMovieById(imbdID) {
 	try {
 		const response = await axios.get('http://www.omdbapi.com/', {
@@ -82,15 +92,7 @@ document.addEventListener('click', (evt) => {
 });
 
 // Event delegation to update input value with clicked movie title
-resultsWrapper.addEventListener('click', (evt) => {
-	const option = evt.target.closest('a');
-	if (resultsWrapper.contains(option)) {
-		const span = option.querySelector('span');
-		input.value = span.textContent;
-		dropdown.classList.remove('is-active');
-		findMovieById(span.dataset.imdbid);
-	}
-});
+resultsWrapper.addEventListener('click', onMovieSelect);
 
 
 
