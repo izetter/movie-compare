@@ -33,7 +33,7 @@ async function onInput(evt) {
 		option.classList.add('dropdown-item');
 		option.innerHTML = `
 			<img src="${posterSRC}">
-			<span>${movie.Title}</span>
+			<span data-imdbid="${movie.imdbID}">${movie.Title}</span>
 		`;
 
 		resultsWrapper.append(option);
@@ -59,6 +59,21 @@ async function searchMovies(searchString) {
 	}
 }
 
+async function findMovieById(imbdID) {
+	try {
+		const response = await axios.get('http://www.omdbapi.com/', {
+			params: {
+				apikey: 'a23e8576',
+				i: imbdID,
+			},
+		});
+		console.log(response.data);
+	} catch (err) {
+		console.log(err);
+	}
+}
+
+// Debounce update of dropdown (debounce requests)
 input.addEventListener('input', debounce(onInput, 500));
 
 // If user clicks anywhere other than the autocomplete div or any child element of it, close the autocomplete.
@@ -68,10 +83,12 @@ document.addEventListener('click', (evt) => {
 
 // Event delegation to update input value with clicked movie title
 resultsWrapper.addEventListener('click', (evt) => {
-	const anchorTag = evt.target.closest('a');
-	if (resultsWrapper.contains(anchorTag)) {
+	const option = evt.target.closest('a');
+	if (resultsWrapper.contains(option)) {
+		const span = option.querySelector('span');
+		input.value = span.textContent;
 		dropdown.classList.remove('is-active');
-		input.value = anchorTag.querySelector('span').textContent;
+		findMovieById(span.dataset.imdbid);
 	}
 });
 
@@ -94,16 +111,4 @@ function debounce(func, delay) {
 	};
 }
 
-async function findMovieById(imbdID) {
-	try {
-		const response = await axios.get('http://www.omdbapi.com/', {
-			params: {
-				apikey: 'a23e8576',
-				i: imbdID,
-			},
-		});
-		console.log(response.data);
-	} catch (err) {
-		console.log(err);
-	}
-}
+
