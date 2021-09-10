@@ -19,7 +19,7 @@ const resultsWrapper = document.querySelector('.results');
 async function onInput(evt) {
 	const movies = await searchMovies(evt.target.value);
 
-	if (movies.length === 0) {	// hide the dropdown if searchMovies returns no matches (the empty array)
+	if (movies === null || movies.length === 0) {	// hide the dropdown if searchMovies' request fails or returns no matches (the empty array)
 		dropdown.classList.remove('is-active');
 		return;
 	}
@@ -55,7 +55,8 @@ async function searchMovies(searchString) {
 
 		return response.data.Search;
 	} catch (err) {
-		console.log(err);
+		console.dir(err);
+		return null;	// Return null in case of an actual Error.
 	}
 }
 
