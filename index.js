@@ -67,7 +67,7 @@ async function onMovieSelect(evt) {
 		input.value = span.textContent;
 		dropdown.classList.remove('is-active');
 		const movieDetails = await findMovieById(span.dataset.imdbid);
-		console.log(movieDetails);
+		document.querySelector('#summary').innerHTML = movieTemplate(movieDetails);
 	}
 }
 
@@ -85,6 +85,24 @@ async function findMovieById(imbdID) {
 	}
 }
 
+function movieTemplate(movieDetails) {
+	return `
+		<article class="media">
+			<figure class="media-left">
+				<p class="image"><img src="${movieDetails.Poster}"></p>
+			</figure>
+			<div class="media-content">
+				<div class="content">
+					<h1>${movieDetails.Title}</h1>
+					<h4>${movieDetails.Genre}</h4>
+					<p>${movieDetails.Plot}</p>
+				</div>
+			</div>
+		</article>
+	`;
+}
+
+
 // Debounce update of dropdown (debounce requests)
 input.addEventListener('input', debounce(onInput, 500));
 
@@ -95,6 +113,23 @@ document.addEventListener('click', (evt) => {
 
 // Event delegation to update input value with clicked movie title
 resultsWrapper.addEventListener('click', onMovieSelect);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
