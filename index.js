@@ -1,4 +1,3 @@
-
 async function searchMovies(searchString) {
 	try {
 		const response = await axios.get('http://www.omdbapi.com/', {
@@ -15,7 +14,7 @@ async function searchMovies(searchString) {
 		return response.data.Search;
 	} catch (err) {
 		console.dir(err);
-		return null;	// Return null in case of an actual Error.
+		return null; // Return null in case of an actual Error.
 	}
 }
 
@@ -70,3 +69,15 @@ function movieTemplate(movieDetails) {
 		</article>
 	`;
 }
+
+createAutocomplete({
+	root: document.querySelector('.autocomplete'),
+});
+
+createAutocomplete({
+	root: document.querySelector('.autocomplete-two'),
+});
+
+createAutocomplete({
+	root: document.querySelector('.autocomplete-three'),
+});

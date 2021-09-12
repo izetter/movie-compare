@@ -1,8 +1,10 @@
-(function createAutocomplete(configurationObject) {
+
+// Must pass a "configuation object" to createAutocomplete.
+function createAutocomplete({root}) {
 	
 	// Writing HTML here to make this code more easily reusable as all the needed HTML for the search and autocomplete functionality
 	// is created here in this file. Only the "root" variable needs to reference to an existing element created in the HTML file.
-	const root = document.querySelector('.autocomplete');
+
 	root.innerHTML = `
 		<label for="input"><b>Search for a movie</b></label>
 		<input type="text" class="input" id="input">
@@ -13,9 +15,9 @@
 		</div>
 	`;
 
-	const input = document.querySelector('input');
-	const dropdown = document.querySelector('.dropdown');
-	const resultsWrapper = document.querySelector('.results');
+	const input = root.querySelector('input');
+	const dropdown = root.querySelector('.dropdown');
+	const resultsWrapper = root.querySelector('.results');
 
 
 
@@ -70,4 +72,4 @@
 	// Event delegation to update input value with clicked movie title
 	resultsWrapper.addEventListener('click', onMovieSelect);
 
-})();
+}
