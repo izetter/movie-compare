@@ -32,6 +32,19 @@ async function findMovieById(imbdID) {
 	}
 }
 
+
+async function onMovieSelect(option) {
+	const span = option.querySelector('span');
+
+	const movieDetails = await findMovieById(span.dataset.imdbid);
+
+	document.querySelector('#summary').innerHTML = movieTemplate(movieDetails);
+
+	return span.textContent;
+
+}
+
+
 function movieTemplate(movieDetails) {
 	return `
 		<article class="media">
@@ -78,5 +91,8 @@ createAutocomplete({
 			<img src="${posterSRC}">
 			<span data-imdbid="${movie.imdbID}">${movie.Title} (${movie.Year})</span>
 		`;
+	},
+	onOptionSelect(option) {
+		onMovieSelect(option);
 	},
 });
