@@ -72,12 +72,11 @@ function movieTemplate(movieDetails) {
 
 createAutocomplete({
 	root: document.querySelector('.autocomplete'),
-});
-
-createAutocomplete({
-	root: document.querySelector('.autocomplete-two'),
-});
-
-createAutocomplete({
-	root: document.querySelector('.autocomplete-three'),
+	renderOption(movie) {
+		const posterSRC = movie.Poster === 'N/A' ? '' : movie.Poster; // The API assings the string "N/A" when no poster URL is found
+		return `
+			<img src="${posterSRC}">
+			<span data-imdbid="${movie.imdbID}">${movie.Title} (${movie.Year})</span>
+		`;
+	},
 });
