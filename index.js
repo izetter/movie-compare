@@ -6,15 +6,13 @@ async function searchMovies(searchString) {
 				s: searchString,
 			},
 		});
-
 		// If the OMBD API can't find any matching movies, its response will contain a string property called "Error",
 		// But it's not really an error though, the request is still succesful, it's just how they designed the API.
 		if (response.data.Error) return [];
-
 		return response.data.Search;
 	} catch (err) {
 		console.dir(err);
-		return null; // Return null in case of an actual Error.
+		return [];
 	}
 }
 
@@ -32,18 +30,12 @@ async function findMovieById(imbdID) {
 	}
 }
 
-
 async function onMovieSelect(option) {
 	const span = option.querySelector('span');
-
 	const movieDetails = await findMovieById(span.dataset.imdbid);
-
 	document.querySelector('#summary').innerHTML = movieTemplate(movieDetails);
-
 	return span.textContent;
-
 }
-
 
 function movieTemplate(movieDetails) {
 	return `
@@ -86,8 +78,7 @@ function movieTemplate(movieDetails) {
 createAutocomplete({
 	root: document.querySelector('.autocomplete'),
 	async fetchData(string) {
-		const response = await searchMovies(string);
-		return response;
+		return await searchMovies(string);
 	},
 	renderOption(movie) {
 		const posterSRC = movie.Poster === 'N/A' ? '' : movie.Poster; // The API assings the string "N/A" when no poster URL is found
@@ -96,7 +87,7 @@ createAutocomplete({
 			<span data-imdbid="${movie.imdbID}">${movie.Title} (${movie.Year})</span>
 		`;
 	},
-	onOptionSelect(option) {
-		onMovieSelect(option);
+	onOptionSelect(movie) {
+		onMovieSelect(movie);
 	},
 });
