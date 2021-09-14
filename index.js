@@ -85,6 +85,10 @@ function movieTemplate(movieDetails) {
 
 createAutocomplete({
 	root: document.querySelector('.autocomplete'),
+	async fetchData(string) {
+		const response = await searchMovies(string);
+		return response;
+	},
 	renderOption(movie) {
 		const posterSRC = movie.Poster === 'N/A' ? '' : movie.Poster; // The API assings the string "N/A" when no poster URL is found
 		return `

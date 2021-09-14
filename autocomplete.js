@@ -1,4 +1,6 @@
 
+////////// Creates a dropdown component that  with the elements  items from the value of an
+
 /* 
 Must pass a "configuation object" to createAutocomplete.
 
@@ -15,13 +17,13 @@ by the class names used. However
 
 */
 
-function createAutocomplete({root, renderOption, onOptionSelect}) {
+function createAutocomplete({root, fetchData, renderOption, onOptionSelect}) {
 	
 	// Writing HTML here to make this code more easily reusable as all the needed HTML for the search and autocomplete functionality
 	// is created here in this file. Only the "root" variable needs to reference to an existing element created in the HTML file.
 
 	root.innerHTML = `
-		<label for="input"><b>Search for a movie</b></label>
+		<label for="input"><b>Search</b></label>
 		<input type="text" class="input" id="input">
 		<div class="dropdown">
 			<div class="dropdown-menu">
@@ -38,9 +40,9 @@ function createAutocomplete({root, renderOption, onOptionSelect}) {
 
 
 	async function onInput(evt) {
-		const movies = await searchMovies(evt.target.value);
+		const items = await fetchData(evt.target.value);
 
-		if (movies === null || movies.length === 0) {	// hide the dropdown if searchMovies' request fails or returns no matches (the empty array)
+		if (items === null || items.length === 0) {	// hide the dropdown if searchMovies' request fails or returns no matches (the empty array)
 			dropdown.classList.remove('is-active');
 			return;
 		}
@@ -48,10 +50,10 @@ function createAutocomplete({root, renderOption, onOptionSelect}) {
 		resultsWrapper.innerHTML = '';	// deletes any previous results from the dropdown, and therefore, their event listeners.
 		dropdown.classList.add('is-active');
 
-		for (let movie of movies) {
+		for (let item of items) {
 			const option = document.createElement('a');	// dropdown option
 			option.classList.add('dropdown-item');
-			option.innerHTML = renderOption(movie);
+			option.innerHTML = renderOption(item);
 			resultsWrapper.append(option);
 		}
 	}
