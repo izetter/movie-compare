@@ -75,19 +75,27 @@ function movieTemplate(movieDetails) {
 	`;
 }
 
+// FOR THE CONFIGURATION OBJECT
+
+function fetchData(string) {  	// Wrapper function for semantics, createAutocomplete is application-agnostic and expects a function called fetchData
+	return searchMovies(string);
+}
+
+function renderOption(movie) {
+	const posterSRC = movie.Poster === 'N/A' ? '' : movie.Poster; // The API assings the string "N/A" when no poster URL is found
+	return `
+		<img src="${posterSRC}">
+		<span data-imdbid="${movie.imdbID}">${movie.Title} (${movie.Year})</span>
+	`;
+}
+
+function onOptionSelect(movie) { 	// Wrapper function for semantics, createAutocomplete is application-agnostic and expects a function called onOptionSelect
+	return onMovieSelect(movie);
+}
+
 createAutocomplete({
-	root: document.querySelector('.autocomplete'),
-	async fetchData(string) {
-		return await searchMovies(string);
-	},
-	renderOption(movie) {
-		const posterSRC = movie.Poster === 'N/A' ? '' : movie.Poster; // The API assings the string "N/A" when no poster URL is found
-		return `
-			<img src="${posterSRC}">
-			<span data-imdbid="${movie.imdbID}">${movie.Title} (${movie.Year})</span>
-		`;
-	},
-	onOptionSelect(movie) {
-		onMovieSelect(movie);
-	},
+	root: document.querySelector('.autocomplete'),	// The root element for the autocomplete dropdown component
+	fetchData,			// Obtain data for the autocomplete dropdown component (array of movies matching search query)
+	renderOption,		// Return the content of a dropdown option (poster, title, year)
+	onOptionSelect,		// Handle selection of an option in the dropdown (inject HTML movie details and return movie title)
 });

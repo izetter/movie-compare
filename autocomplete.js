@@ -36,8 +36,8 @@ function createAutocomplete({root, fetchData, renderOption, onOptionSelect}) {
 	async function onDropdwonClick(evt) {
 		const option = evt.target.closest('a');
 		if (resultsWrapper.contains(option)) {
+			input.value = await onOptionSelect(option);
 			dropdown.classList.remove('is-active');
-			input.value = onOptionSelect(option);
 		}
 	}
 
