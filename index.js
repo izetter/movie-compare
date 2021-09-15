@@ -1,3 +1,4 @@
+
 async function searchMovies(searchString) {
 	try {
 		const response = await axios.get('http://www.omdbapi.com/', {
@@ -30,10 +31,11 @@ async function findMovieById(imbdID) {
 	}
 }
 
-async function onMovieSelect(option) {
+// Handle selection of an option in the dropdown (inject HTML movie details and return movie title)
+async function onMovieSelect(option, summaryElement) {
 	const span = option.querySelector('span');
 	const movieDetails = await findMovieById(span.dataset.imdbid);
-	document.querySelector('#summary').innerHTML = movieTemplate(movieDetails);
+	summaryElement.innerHTML = movieTemplate(movieDetails);
 	return span.textContent;
 }
 
@@ -75,27 +77,35 @@ function movieTemplate(movieDetails) {
 	`;
 }
 
-// FOR THE CONFIGURATION OBJECT
+// CONFIGURATION OBJECT FOR THE AUTOCOMPLETE DROPDOWN
 
-function fetchData(string) {  	// Wrapper function for semantics, createAutocomplete is application-agnostic and expects a function called fetchData
-	return searchMovies(string);
-}
-
-function renderOption(movie) {
-	const posterSRC = movie.Poster === 'N/A' ? '' : movie.Poster; // The API assings the string "N/A" when no poster URL is found
-	return `
-		<img src="${posterSRC}">
-		<span data-imdbid="${movie.imdbID}">${movie.Title} (${movie.Year})</span>
-	`;
-}
-
-function onOptionSelect(movie) { 	// Wrapper function for semantics, createAutocomplete is application-agnostic and expects a function called onOptionSelect
-	return onMovieSelect(movie);
+const autoCompleteConfig = {
+	fetchData(string) {  	// Wrapper function for semantics, createAutocomplete is application-agnostic and expects a function called fetchData
+		return searchMovies(string);
+	},
+	renderOption(movie) {	// Return the content of a dropdown option (poster, title, year)
+		const posterSRC = movie.Poster === 'N/A' ? '' : movie.Poster; // The API assings the string "N/A" when no poster URL is found
+		return `
+			<img src="${posterSRC}">
+			<span data-imdbid="${movie.imdbID}">${movie.Title} (${movie.Year})</span>
+		`;
+	},
 }
 
 createAutocomplete({
-	root: document.querySelector('.autocomplete'),	// The root element for the autocomplete dropdown component
-	fetchData,			// Obtain data for the autocomplete dropdown component (array of movies matching search query)
-	renderOption,		// Return the content of a dropdown option (poster, title, year)
-	onOptionSelect,		// Handle selection of an option in the dropdown (inject HTML movie details and return movie title)
+	root: document.querySelector('#left-autocomplete'),
+	onOptionSelect(movie) { // Wrapper function for semantics, createAutocomplete is application-agnostic and expects a function called onOptionSelect
+		document.querySelector('.tutorial').classList.add('is-hidden');
+		return onMovieSelect(movie, document.querySelector('#left-summary'));
+	},
+	...autoCompleteConfig,
+});
+
+createAutocomplete({
+	root: document.querySelector('#right-autocomplete'),
+	onOptionSelect(movie) {
+		document.querySelector('.tutorial').classList.add('is-hidden');
+		return onMovieSelect(movie, document.querySelector('#right-summary'));
+	},
+	...autoCompleteConfig,
 });
