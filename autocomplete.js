@@ -33,6 +33,7 @@ function createAutocomplete({root, fetchData, renderOption, onOptionSelect}) {
 		}
 	}
 
+	// Event delegation
 	async function onDropdwonClick(evt) {
 		const option = evt.target.closest('a');
 		if (resultsWrapper.contains(option)) {
