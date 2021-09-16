@@ -1,4 +1,3 @@
-
 async function searchMovies(searchString) {
 	try {
 		const response = await axios.get('http://www.omdbapi.com/', {
@@ -12,7 +11,7 @@ async function searchMovies(searchString) {
 		if (response.data.Error) return [];
 		return response.data.Search;
 	} catch (err) {
-		console.dir(err);
+		console.log(err);
 		return [];
 	}
 }
@@ -49,15 +48,33 @@ async function onMovieSelect(option, summaryElement, side) {
 }
 
 function runComparisson() {
-	console.log('run compareishon');
+	const leftSideStats = document.querySelectorAll('#left-summary article p.title');
+	const rightSideStats = document.querySelectorAll('#right-summary article p.title');
+
+	leftSideStats.forEach((leftStat, i) => {
+		const rightStat = rightSideStats[i];
+
+		// Because data-* attributes store values as strings.
+		const leftStatValue = parseFloat(leftStat.dataset.value);
+		const rightStatValue = parseFloat(rightStat.dataset.value);
+
+		if (leftStatValue > rightStatValue) {
+			rightStat.parentElement.classList.add('is-warning');
+			rightStat.parentElement.classList.remove('is-primary');
+		} else {
+			leftStat.parentElement.classList.add('is-warning');
+			leftStat.parentElement.classList.remove('is-primary');
+		}
+	});
 }
 
 function movieTemplate(movieDetails) {
 	const boxOffice = parseInt(movieDetails.BoxOffice.replace(/[\$,]/g, '')); // Replaces any ocurrence of dolar sign or comma charachters with an empty string
 	const metascore = parseInt(movieDetails.Metascore);
 	const imdbRating = parseFloat(movieDetails.imdbRating);
-	const imdbVotes = parseInt(movieDetails.BoxOffice.replace(/,/g, ''));
+	const imdbVotes = parseInt(movieDetails.imdbVotes.replace(/,/g, ''));
 
+	// Because movieDetails.Awards is text of variable structure, awards will just be the sum of wins and nominations regardless of type.
 	const awards = movieDetails.Awards.split(' ').reduce((awardsSum, word) => {
 		const value = parseInt(word);
 		if (isNaN(value)) {
@@ -65,9 +82,7 @@ function movieTemplate(movieDetails) {
 		} else {
 			return awardsSum + value;
 		}
-	}, 0)
-	
-	console.log(awards);
+	}, 0);
 
 	return `
 		<article class="media">
@@ -84,46 +99,49 @@ function movieTemplate(movieDetails) {
 		</article>
 
 		<article class="notification is-primary">
-			<p class="title">${movieDetails.Awards}</p>
+			<p class="title" data-value="${awards}">${movieDetails.Awards}</p>
 			<p class="subtitle">Awards</p>
 		</article>
 		<article class="notification is-primary">
-			<p class="title">${movieDetails.BoxOffice}</p>
+			<p class="title" data-value="${boxOffice}">${movieDetails.BoxOffice}</p>
 			<p class="subtitle">Box Office</p>
 		</article>
 		<article class="notification is-primary">
-			<p class="title">${movieDetails.Metascore}</p>
+			<p class="title" data-value="${metascore}">${movieDetails.Metascore}</p>
 			<p class="subtitle">Metascore</p>
 		</article>
 		<article class="notification is-primary">
-			<p class="title">${movieDetails.imdbRating}</p>
+			<p class="title" data-value="${imdbRating}">${movieDetails.imdbRating}</p>
 			<p class="subtitle">IMDB Rating</p>
 		</article>
 		<article class="notification is-primary">
-			<p class="title">${movieDetails.imdbVotes}</p>
+			<p class="title" data-value="${imdbVotes}">${movieDetails.imdbVotes}</p>
 			<p class="subtitle">IMDB Votes</p>
 		</article>
 	`;
 }
 
-// CONFIGURATION OBJECT FOR THE AUTOCOMPLETE DROPDOWN
+// CONFIGURATION OBJECT FOR THE AUTOCOMPLETE DROPDOWN COMPONENT ---------------------------------------------
 
 const autoCompleteConfig = {
-	fetchData(string) {  	// Wrapper function for semantics, createAutocomplete is application-agnostic and expects a function called fetchData
+	fetchData(string) {
+		// Wrapper function for semantics, createAutocomplete is application-agnostic and expects a function called fetchData
 		return searchMovies(string);
 	},
-	renderOption(movie) {	// Return the content of a dropdown option (poster, title, year)
+	renderOption(movie) {
+		// Return the content of a dropdown option (poster, title, year)
 		const posterSRC = movie.Poster === 'N/A' ? '' : movie.Poster; // The API assings the string "N/A" when no poster URL is found
 		return `
 			<img src="${posterSRC}">
 			<span data-imdbid="${movie.imdbID}">${movie.Title} (${movie.Year})</span>
 		`;
 	},
-}
+};
 
 createAutocomplete({
 	root: document.querySelector('#left-autocomplete'),
-	onOptionSelect(movie) { // Wrapper function for semantics, createAutocomplete is application-agnostic and expects a function called onOptionSelect
+	onOptionSelect(movie) {
+		// Wrapper function for semantics, createAutocomplete is application-agnostic and expects a function called onOptionSelect
 		document.querySelector('.tutorial').classList.add('is-hidden');
 		return onMovieSelect(movie, document.querySelector('#left-summary'), 'left');
 	},
