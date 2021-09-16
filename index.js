@@ -33,7 +33,7 @@ async function findMovieById(imbdID) {
 	}
 }
 
-// Handle selection of an option in the dropdown (inject HTML movie details and return movie title)
+// Handle selection of an option in the dropdown (inject HTML movie details and return movie title).
 async function onMovieSelect(option, summaryElement, side) {
 	const span = option.querySelector('span');
 	const movieDetails = await findMovieById(span.dataset.imdbid);
@@ -41,39 +41,49 @@ async function onMovieSelect(option, summaryElement, side) {
 
 	if (side === 'left') leftMovie = movieDetails;
 	if (side === 'right') rightMovie = movieDetails;
-
 	if (leftMovie && rightMovie) runComparisson();
 
 	return span.textContent;
 }
 
 function runComparisson() {
-	const leftSideStats = document.querySelectorAll('#left-summary article p.title');
-	const rightSideStats = document.querySelectorAll('#right-summary article p.title');
+	const leftSideStats = document.querySelectorAll('#left-summary article.notification');
+	const rightSideStats = document.querySelectorAll('#right-summary article.notification');
+	const defaultClassList = ['notification']
 
+	// Compare and style article elements according to comparisson results.
 	leftSideStats.forEach((leftStat, i) => {
 		const rightStat = rightSideStats[i];
+
+		// Resetting classLists for easier conditional styling.
+		leftStat.classList = defaultClassList.join(' ');
+		rightStat.classList = defaultClassList.join(' ');
 
 		// Because data-* attributes store values as strings.
 		const leftStatValue = parseFloat(leftStat.dataset.value);
 		const rightStatValue = parseFloat(rightStat.dataset.value);
 
-		if (leftStatValue > rightStatValue) {
-			leftStat.parentElement.classList.add('is-primary');
-			leftStat.parentElement.classList.remove('is-warning');
-			rightStat.parentElement.classList.add('is-warning');
-			rightStat.parentElement.classList.remove('is-primary');
+		// Because the OMDB API sometimes has no data so it returns a "N/A" string.
+		if (isNaN(leftStatValue) || isNaN(rightStatValue)) {
+
+			isNaN(leftStatValue) ? leftStat.classList.add('is-danger') : leftStat.classList.add('is-primary');
+			isNaN(rightStatValue) ? rightStat.classList.add('is-danger') : rightStat.classList.add('is-primary');
+
+		} else if (leftStatValue === rightStatValue) {
+			leftStat.classList.add('is-primary');
+			rightStat.classList.add('is-primary');
+		} else if (leftStatValue > rightStatValue) {
+			leftStat.classList.add('is-primary');
+			rightStat.classList.add('is-warning');
 		} else {
-			leftStat.parentElement.classList.add('is-warning');
-			leftStat.parentElement.classList.remove('is-primary');
-			rightStat.parentElement.classList.add('is-primary');
-			rightStat.parentElement.classList.remove('is-warning');
+			leftStat.classList.add('is-warning');
+			rightStat.classList.add('is-primary');
 		}
 	});
 }
 
 function movieTemplate(movieDetails) {
-	const boxOffice = parseInt(movieDetails.BoxOffice.replace(/[\$,]/g, '')); // Replaces any ocurrence of dolar sign or comma charachters with an empty string
+	const boxOffice = parseInt(movieDetails.BoxOffice.replace(/[\$,]/g, '')); // Replaces any ocurrence of dolar sign or comma charachters with an empty string.
 	const metascore = parseInt(movieDetails.Metascore);
 	const imdbRating = parseFloat(movieDetails.imdbRating);
 	const imdbVotes = parseInt(movieDetails.imdbVotes.replace(/,/g, ''));
@@ -102,24 +112,24 @@ function movieTemplate(movieDetails) {
 			</div>
 		</article>
 
-		<article class="notification is-primary">
-			<p class="title" data-value="${awards}">${movieDetails.Awards}</p>
+		<article data-value="${awards}" class="notification is-primary">
+			<p class="title">${movieDetails.Awards}</p>
 			<p class="subtitle">Awards</p>
 		</article>
-		<article class="notification is-primary">
-			<p class="title" data-value="${boxOffice}">${movieDetails.BoxOffice}</p>
+		<article data-value="${boxOffice}" class="notification is-primary">
+			<p class="title">${movieDetails.BoxOffice}</p>
 			<p class="subtitle">Box Office</p>
 		</article>
-		<article class="notification is-primary">
-			<p class="title" data-value="${metascore}">${movieDetails.Metascore}</p>
+		<article data-value="${metascore}" class="notification is-primary">
+			<p class="title">${movieDetails.Metascore}</p>
 			<p class="subtitle">Metascore</p>
 		</article>
-		<article class="notification is-primary">
-			<p class="title" data-value="${imdbRating}">${movieDetails.imdbRating}</p>
+		<article data-value="${imdbRating}" class="notification is-primary">
+			<p class="title">${movieDetails.imdbRating}</p>
 			<p class="subtitle">IMDB Rating</p>
 		</article>
-		<article class="notification is-primary">
-			<p class="title" data-value="${imdbVotes}">${movieDetails.imdbVotes}</p>
+		<article data-value="${imdbVotes}" class="notification is-primary">
+			<p class="title">${movieDetails.imdbVotes}</p>
 			<p class="subtitle">IMDB Votes</p>
 		</article>
 	`;
@@ -145,7 +155,7 @@ const autoCompleteConfig = {
 createAutocomplete({
 	root: document.querySelector('#left-autocomplete'),
 	onOptionSelect(movie) { // Wrapper function for semantics, createAutocomplete is application-agnostic and expects a function called onOptionSelect
-		document.querySelector('.tutorial').classList.add('is-hidden');
+		document.querySelector('.instructions').classList.add('is-hidden');
 		return onMovieSelect(movie, document.querySelector('#left-summary'), 'left');
 	},
 	...autoCompleteConfig,
@@ -154,7 +164,7 @@ createAutocomplete({
 createAutocomplete({
 	root: document.querySelector('#right-autocomplete'),
 	onOptionSelect(movie) {
-		document.querySelector('.tutorial').classList.add('is-hidden');
+		document.querySelector('.instructions').classList.add('is-hidden');
 		return onMovieSelect(movie, document.querySelector('#right-summary'), 'right');
 	},
 	...autoCompleteConfig,
