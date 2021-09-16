@@ -1,3 +1,6 @@
+let leftMovie = null;
+let rightMovie = null;
+
 async function searchMovies(searchString) {
 	try {
 		const response = await axios.get('http://www.omdbapi.com/', {
@@ -31,9 +34,6 @@ async function findMovieById(imbdID) {
 }
 
 // Handle selection of an option in the dropdown (inject HTML movie details and return movie title)
-
-let leftMovie = null;
-let rightMovie = null;
 async function onMovieSelect(option, summaryElement, side) {
 	const span = option.querySelector('span');
 	const movieDetails = await findMovieById(span.dataset.imdbid);
@@ -59,11 +59,15 @@ function runComparisson() {
 		const rightStatValue = parseFloat(rightStat.dataset.value);
 
 		if (leftStatValue > rightStatValue) {
+			leftStat.parentElement.classList.add('is-primary');
+			leftStat.parentElement.classList.remove('is-warning');
 			rightStat.parentElement.classList.add('is-warning');
 			rightStat.parentElement.classList.remove('is-primary');
 		} else {
 			leftStat.parentElement.classList.add('is-warning');
 			leftStat.parentElement.classList.remove('is-primary');
+			rightStat.parentElement.classList.add('is-primary');
+			rightStat.parentElement.classList.remove('is-warning');
 		}
 	});
 }
@@ -140,8 +144,7 @@ const autoCompleteConfig = {
 
 createAutocomplete({
 	root: document.querySelector('#left-autocomplete'),
-	onOptionSelect(movie) {
-		// Wrapper function for semantics, createAutocomplete is application-agnostic and expects a function called onOptionSelect
+	onOptionSelect(movie) { // Wrapper function for semantics, createAutocomplete is application-agnostic and expects a function called onOptionSelect
 		document.querySelector('.tutorial').classList.add('is-hidden');
 		return onMovieSelect(movie, document.querySelector('#left-summary'), 'left');
 	},
