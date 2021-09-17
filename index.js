@@ -83,10 +83,13 @@ function runComparisson() {
 }
 
 function movieTemplate(movieDetails) {
-	const boxOffice = parseInt(movieDetails.BoxOffice.replace(/[\$,]/g, '')); // Replaces any ocurrence of dolar sign or comma charachters with an empty string.
+	const posterSRC = movieDetails.Poster === 'N/A' ? 'poster-not-found.png' : movieDetails.Poster; // The API assings the string "N/A" when no poster URL is found
 	const metascore = parseInt(movieDetails.Metascore);
 	const imdbRating = parseFloat(movieDetails.imdbRating);
 	const imdbVotes = parseInt(movieDetails.imdbVotes.replace(/,/g, ''));
+
+	// Because some OMDB movies don't contain a BoxOffice property, must defaul to something to avoid error.
+	const boxOffice = movieDetails.BoxOffice ? parseInt(movieDetails.BoxOffice.replace(/[\$,]/g, '')) : 'N/A'; // Replaces any ocurrence of dolar sign or comma charachters with an empty string.
 
 	// Because movieDetails.Awards is text of variable structure, awards will just be the sum of wins and nominations regardless of type.
 	const awards = movieDetails.Awards.split(' ').reduce((awardsSum, word) => {
@@ -101,7 +104,7 @@ function movieTemplate(movieDetails) {
 	return `
 		<article class="media">
 			<figure class="media-left">
-				<p class="image"><img src="${movieDetails.Poster}"></p>
+				<p class="image"><img src="${posterSRC}"></p>
 			</figure>
 			<div class="media-content">
 				<div class="content">
@@ -117,7 +120,7 @@ function movieTemplate(movieDetails) {
 			<p class="subtitle">Awards</p>
 		</article>
 		<article data-value="${boxOffice}" class="notification is-primary">
-			<p class="title">${movieDetails.BoxOffice}</p>
+			<p class="title">${movieDetails.BoxOffice || boxOffice}</p>
 			<p class="subtitle">Box Office</p>
 		</article>
 		<article data-value="${metascore}" class="notification is-primary">
@@ -144,7 +147,7 @@ const autoCompleteConfig = {
 	},
 	renderOption(movie) {
 		// Return the content of a dropdown option (poster, title, year)
-		const posterSRC = movie.Poster === 'N/A' ? '' : movie.Poster; // The API assings the string "N/A" when no poster URL is found
+		const posterSRC = movie.Poster === 'N/A' ? '' : movie.Poster;
 		return `
 			<img src="${posterSRC}">
 			<span data-imdbid="${movie.imdbID}">${movie.Title} (${movie.Year})</span>
@@ -169,3 +172,11 @@ createAutocomplete({
 	},
 	...autoCompleteConfig,
 });
+
+
+/* 
+
+Needs to normalize poster size (height and width) in the summary
+Needs to normalize article height in the summary so it's the same for both columns, dictated by the largest one (flexbox adjustments likely)
+
+*/
