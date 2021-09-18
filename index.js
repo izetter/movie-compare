@@ -66,8 +66,8 @@ function runComparisson() {
 		// Because the OMDB API sometimes has no data so it returns a "N/A" string.
 		if (isNaN(leftStatValue) || isNaN(rightStatValue)) {
 
-			isNaN(leftStatValue) ? leftStat.classList.add('is-danger') : leftStat.classList.add('is-primary');
-			isNaN(rightStatValue) ? rightStat.classList.add('is-danger') : rightStat.classList.add('is-primary');
+			isNaN(leftStatValue) ? leftStat.classList.add('is-unavailable') : leftStat.classList.add('is-primary');
+			isNaN(rightStatValue) ? rightStat.classList.add('is-unavailable') : rightStat.classList.add('is-primary');
 
 		} else if (leftStatValue === rightStatValue) {
 			leftStat.classList.add('is-primary');
@@ -88,7 +88,7 @@ function movieTemplate(movieDetails) {
 	const imdbRating = parseFloat(movieDetails.imdbRating);
 	const imdbVotes = parseInt(movieDetails.imdbVotes.replace(/,/g, ''));
 
-	// Because some OMDB movies don't contain a BoxOffice property, must defaul to something to avoid error.
+	// Because some OMDB movies don't contain a BoxOffice property, must default to something to avoid error.
 	const boxOffice = movieDetails.BoxOffice ? parseInt(movieDetails.BoxOffice.replace(/[\$,]/g, '')) : 'N/A'; // Replaces any ocurrence of dolar sign or comma charachters with an empty string.
 
 	// Because movieDetails.Awards is text of variable structure, awards will just be the sum of wins and nominations regardless of type.
