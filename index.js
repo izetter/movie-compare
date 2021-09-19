@@ -88,7 +88,7 @@ function runComparisson() {
 }
 
 function equalizeHeights(...args) {
-	// Set the heights of the elements on the same row to the same height only when columns side by side (large screens).
+	// Set the heights of the elements on the same row to the same height only when columns are side by side (large screens).
 	if (document.body.clientWidth >= 768) {
 		const heights = args.map((element) => {
 			element.style.height = ''; // reset heights to allow resizing to smaller heights
@@ -158,6 +158,9 @@ function movieTemplate(movieDetails) {
 		</article>
 	`;
 }
+
+// For when rotating screen makes viewport wide enough to display columns side by side
+window.addEventListener('resize', runComparisson);
 
 // CONFIGURATION OBJECT FOR THE AUTOCOMPLETE DROPDOWN COMPONENT ---------------------------------------------
 
