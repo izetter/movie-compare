@@ -3,7 +3,7 @@ let rightMovie = null;
 
 async function searchMovies(searchString) {
 	try {
-		const response = await axios.get('http://www.omdbapi.com/', {
+		const response = await axios.get('https://www.omdbapi.com/', {
 			params: {
 				apikey: 'a23e8576',
 				s: searchString,
@@ -21,7 +21,7 @@ async function searchMovies(searchString) {
 
 async function findMovieById(imbdID) {
 	try {
-		const response = await axios.get('http://www.omdbapi.com/', {
+		const response = await axios.get('https://www.omdbapi.com/', {
 			params: {
 				apikey: 'a23e8576',
 				i: imbdID,
@@ -55,9 +55,6 @@ function runComparisson() {
 		const rightElement = rightElements[i];
 		const defaultClassList = ['notification'];
 
-		// Set the heights of the elements on the same row to the same height.
-		equalizeHeights(leftElement, rightElement);
-
 		// Only set comparisson colors of elements with numerical data (the ones with "notification" class).
 		if (leftElement.classList.contains('notification')) {
 
@@ -86,22 +83,24 @@ function runComparisson() {
 				rightElement.classList.add('is-primary');
 			}
 		}
-
-
+		equalizeHeights(leftElement, rightElement);
 	});
 }
 
 function equalizeHeights(...args) {
-	const heights = args.map((element) => {
-		element.style.height = ''; // reset heights to allow resizing to smaller heights
-		return parseFloat(getComputedStyle(element).height);
-	});
+	// Set the heights of the elements on the same row to the same height only when columns side by side (large screens).
+	if (document.body.clientWidth >= 768) {
+		const heights = args.map((element) => {
+			element.style.height = ''; // reset heights to allow resizing to smaller heights
+			return parseFloat(getComputedStyle(element).height);
+		});
+		
+		const equalizedHeight = Math.max(...heights);
 	
-	const equalizedHeight = Math.max(...heights);
-
-	args.forEach((element) => {
-		element.style.height = `${equalizedHeight}px`;
-	});
+		args.forEach((element) => {
+			element.style.height = `${equalizedHeight}px`;
+		});
+	}
 }
 
 function movieTemplate(movieDetails) {
@@ -126,7 +125,7 @@ function movieTemplate(movieDetails) {
 	return `
 		<article class="media">
 			<figure class="media-left">
-				<p class="image"><img src="${posterSRC}"></p>
+				<div class="image"><img src="${posterSRC}"></div>
 			</figure>
 			<div class="media-content">
 				<div class="content">
@@ -194,11 +193,3 @@ createAutocomplete({
 	},
 	...autoCompleteConfig,
 });
-
-
-/* 
-
-Needs to normalize poster size (height and width) in the summary
-Needs to normalize article height in the summary so it's the same for both columns, dictated by the largest one (flexbox adjustments likely)
-
-*/

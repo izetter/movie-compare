@@ -1,13 +1,6 @@
 .instructions {
 	margin: auto;
 	text-align: center;
-	width: 600px;
-}
-
-figure.image {
-	background-color: black;
-	display: flex;
-	justify-content: center;
 }
 
 figure .image img {
@@ -15,7 +8,7 @@ figure .image img {
 }
 
 .notification {
-	margin-top: 20px !important;
+	margin-top: 20px;
 }
 
 .results {
@@ -23,17 +16,8 @@ figure .image img {
 	overflow-y: scroll;
 }
 
-.title .icon {
-	margin-left: 15px;
-}
-
 .hero {
 	margin-bottom: 20px;
-}
-
-.forms {
-	display: flex;
-	justify-content: space-around;
 }
 
 .dropdown-item {
@@ -45,14 +29,6 @@ figure .image img {
 .dropdown-item img {
 	height: 50px;
 	margin-right: 10px;
-}
-
-article.media {
-	/* height: 300px; */
-}
-
-article.notification {
-	/* height: 200px; */
 }
 
 .is-unavailable {
