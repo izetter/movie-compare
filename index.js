@@ -47,38 +47,60 @@ async function onMovieSelect(option, summaryElement, side) {
 }
 
 function runComparisson() {
-	const leftSideStats = document.querySelectorAll('#left-summary article.notification');
-	const rightSideStats = document.querySelectorAll('#right-summary article.notification');
-	const defaultClassList = ['notification']
+	const leftSideStats = document.querySelectorAll('#left-summary article');
+	const rightSideStats = document.querySelectorAll('#right-summary article');
 
-	// Compare and style article elements according to comparisson results.
+	// Compare and style elements on the same "row" according to comparisson results.
 	leftSideStats.forEach((leftStat, i) => {
 		const rightStat = rightSideStats[i];
+		const defaultClassList = ['notification'];
 
-		// Resetting classLists for easier conditional styling.
-		leftStat.classList = defaultClassList.join(' ');
-		rightStat.classList = defaultClassList.join(' ');
+		// Set the heights of the elements on the same row to the same height.
+		equalizeHeights(leftStat, rightStat);
 
-		// Because data-* attributes store values as strings.
-		const leftStatValue = parseFloat(leftStat.dataset.value);
-		const rightStatValue = parseFloat(rightStat.dataset.value);
+		// Only set comparisson colors of elements with numerical data (the ones with "notification" class).
+		if (leftStat.classList.contains('notification')) {
 
-		// Because the OMDB API sometimes has no data so it returns a "N/A" string.
-		if (isNaN(leftStatValue) || isNaN(rightStatValue)) {
+			// Resetting classLists for easier conditional styling.
+			leftStat.classList = defaultClassList.join(' ');
+			rightStat.classList = defaultClassList.join(' ');
 
-			isNaN(leftStatValue) ? leftStat.classList.add('is-unavailable') : leftStat.classList.add('is-primary');
-			isNaN(rightStatValue) ? rightStat.classList.add('is-unavailable') : rightStat.classList.add('is-primary');
+			// Because data-* attributes store values as strings.
+			const leftStatValue = parseFloat(leftStat.dataset.value);
+			const rightStatValue = parseFloat(rightStat.dataset.value);
 
-		} else if (leftStatValue === rightStatValue) {
-			leftStat.classList.add('is-primary');
-			rightStat.classList.add('is-primary');
-		} else if (leftStatValue > rightStatValue) {
-			leftStat.classList.add('is-primary');
-			rightStat.classList.add('is-warning');
-		} else {
-			leftStat.classList.add('is-warning');
-			rightStat.classList.add('is-primary');
+			// Because the OMDB API sometimes has no data so it returns a "N/A" string.
+			if (isNaN(leftStatValue) || isNaN(rightStatValue)) {
+
+				isNaN(leftStatValue) ? leftStat.classList.add('is-unavailable') : leftStat.classList.add('is-primary');
+				isNaN(rightStatValue) ? rightStat.classList.add('is-unavailable') : rightStat.classList.add('is-primary');
+
+			} else if (leftStatValue === rightStatValue) {
+				leftStat.classList.add('is-primary');
+				rightStat.classList.add('is-primary');
+			} else if (leftStatValue > rightStatValue) {
+				leftStat.classList.add('is-primary');
+				rightStat.classList.add('is-warning');
+			} else {
+				leftStat.classList.add('is-warning');
+				rightStat.classList.add('is-primary');
+			}
 		}
+
+
+	});
+}
+
+function equalizeHeights(...args) {
+	const heights = args.map((element) => {
+		element.style.height = ''; // reset heights to allow resizing to smaller heights
+		return parseFloat(getComputedStyle(element).height);
+	});
+	
+	const equalizedHeight = Math.max(...heights);
+
+	args.forEach((element) => {
+		element.style.height = `${equalizedHeight}px`;
 	});
 }
 
