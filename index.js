@@ -47,43 +47,43 @@ async function onMovieSelect(option, summaryElement, side) {
 }
 
 function runComparisson() {
-	const leftSideStats = document.querySelectorAll('#left-summary article');
-	const rightSideStats = document.querySelectorAll('#right-summary article');
+	const leftElements = document.querySelectorAll('#left-summary article');
+	const rightElements = document.querySelectorAll('#right-summary article');
 
 	// Compare and style elements on the same "row" according to comparisson results.
-	leftSideStats.forEach((leftStat, i) => {
-		const rightStat = rightSideStats[i];
+	leftElements.forEach((leftElement, i) => {
+		const rightElement = rightElements[i];
 		const defaultClassList = ['notification'];
 
 		// Set the heights of the elements on the same row to the same height.
-		equalizeHeights(leftStat, rightStat);
+		equalizeHeights(leftElement, rightElement);
 
 		// Only set comparisson colors of elements with numerical data (the ones with "notification" class).
-		if (leftStat.classList.contains('notification')) {
+		if (leftElement.classList.contains('notification')) {
 
 			// Resetting classLists for easier conditional styling.
-			leftStat.classList = defaultClassList.join(' ');
-			rightStat.classList = defaultClassList.join(' ');
+			leftElement.classList = defaultClassList.join(' ');
+			rightElement.classList = defaultClassList.join(' ');
 
 			// Because data-* attributes store values as strings.
-			const leftStatValue = parseFloat(leftStat.dataset.value);
-			const rightStatValue = parseFloat(rightStat.dataset.value);
+			const leftElementValue = parseFloat(leftElement.dataset.value);
+			const rightElementValue = parseFloat(rightElement.dataset.value);
 
 			// Because the OMDB API sometimes has no data so it returns a "N/A" string.
-			if (isNaN(leftStatValue) || isNaN(rightStatValue)) {
+			if (isNaN(leftElementValue) || isNaN(rightElementValue)) {
 
-				isNaN(leftStatValue) ? leftStat.classList.add('is-unavailable') : leftStat.classList.add('is-primary');
-				isNaN(rightStatValue) ? rightStat.classList.add('is-unavailable') : rightStat.classList.add('is-primary');
+				isNaN(leftElementValue) ? leftElement.classList.add('is-unavailable') : leftElement.classList.add('is-primary');
+				isNaN(rightElementValue) ? rightElement.classList.add('is-unavailable') : rightElement.classList.add('is-primary');
 
-			} else if (leftStatValue === rightStatValue) {
-				leftStat.classList.add('is-primary');
-				rightStat.classList.add('is-primary');
-			} else if (leftStatValue > rightStatValue) {
-				leftStat.classList.add('is-primary');
-				rightStat.classList.add('is-warning');
+			} else if (leftElementValue === rightElementValue) {
+				leftElement.classList.add('is-primary');
+				rightElement.classList.add('is-primary');
+			} else if (leftElementValue > rightElementValue) {
+				leftElement.classList.add('is-primary');
+				rightElement.classList.add('is-warning');
 			} else {
-				leftStat.classList.add('is-warning');
-				rightStat.classList.add('is-primary');
+				leftElement.classList.add('is-warning');
+				rightElement.classList.add('is-primary');
 			}
 		}
 
