@@ -110,13 +110,14 @@ function movieTemplate(movieDetails) {
 	const metascore = parseInt(movieDetails.Metascore);
 	const imdbRating = parseFloat(movieDetails.imdbRating);
 
-	// Because some OMDB movies don't contain a Rotten Tomatoes property, must default to something to avoid error.
-	console.log(movieDetails.Ratings[1]);
-	const rottenTomatoes = movieDetails.Ratings[1] ? parseInt(movieDetails.Ratings[1].Value) : 'N/A';
-	// const rottenTomatoes = movieDetails.Ratings[1] ? parseInt(movieDetails.Ratings[1].Value) : 'N/A';
-	console.log(rottenTomatoes);
+	// Because some OMDB movies don't contain a Rotten Tomatoes object inside the Ratings array, must default to something to avoid error.
+	const rottenTomatoes = () => {
+		for (let rating of movieDetails.Ratings) {
+			if (rating.Source === 'Rotten Tomatoes') return rating.Value;
+		}
+		return 'N/A';
+	};
 
-	
 	// Because some OMDB movies don't contain a BoxOffice property, must default to something to avoid error.
 	const boxOffice = movieDetails.BoxOffice ? parseInt(movieDetails.BoxOffice.replace(/[\$,]/g, '')) : 'N/A'; // Replaces any ocurrence of dolar sign or comma charachters with an empty string.
 
@@ -157,8 +158,8 @@ function movieTemplate(movieDetails) {
 			<p class="title">${movieDetails.imdbRating}</p>
 			<p class="subtitle">IMDB Rating</p>
 		</article>
-		<article data-value="${rottenTomatoes}" class="notification is-success">
-			<p class="title">${movieDetails.Ratings[1] || rottenTomatoes}</p>
+		<article data-value="${parseInt(rottenTomatoes())}" class="notification is-success">
+			<p class="title">${rottenTomatoes()}</p>
 			<p class="subtitle">Rotten Tomatoes</p>
 		</article>
 		<article data-value="${boxOffice}" class="notification is-success">
