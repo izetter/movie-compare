@@ -35,3 +35,13 @@ figure .image img {
 	background-color: hsl(0, 0%, 91%);
 	color: hsl(0, 0%, 71%);
 }
+
+header {
+	/* background-color: hsl(51, 100%, 47%); */
+	text-align: center;
+	color: hsl(0, 0%, 17%);
+}
+
+.instructions {
+	background-color: hsl(51, 100%, 87%);
+}

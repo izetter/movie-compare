@@ -91,7 +91,7 @@ function equalizeHeights(...args) {
 	// Set the heights of the elements on the same row to the same height only when columns are side by side (large screens).
 	if (document.body.clientWidth >= 768) {
 		const heights = args.map((element) => {
-			element.style.height = ''; // reset heights to allow resizing to smaller heights
+			element.style.height = ''; // reset heights to allow resizing to smaller heights than previous.
 			return parseFloat(getComputedStyle(element).height);
 		});
 		
@@ -107,7 +107,7 @@ function movieTemplate(movieDetails) {
 	const posterSRC = movieDetails.Poster === 'N/A' ? 'poster-not-found.png' : movieDetails.Poster; // The API assings the string "N/A" when no poster URL is found
 	const metascore = parseInt(movieDetails.Metascore);
 	const imdbRating = parseFloat(movieDetails.imdbRating);
-	const imdbVotes = parseInt(movieDetails.imdbVotes.replace(/,/g, ''));
+	const rottenTomatoes = parseInt(movieDetails.Ratings[1].Value);
 
 	// Because some OMDB movies don't contain a BoxOffice property, must default to something to avoid error.
 	const boxOffice = movieDetails.BoxOffice ? parseInt(movieDetails.BoxOffice.replace(/[\$,]/g, '')) : 'N/A'; // Replaces any ocurrence of dolar sign or comma charachters with an empty string.
@@ -131,6 +131,7 @@ function movieTemplate(movieDetails) {
 				<div class="content">
 					<h1>${movieDetails.Title}</h1>
 					<h4>${movieDetails.Genre}</h4>
+					<h6>${movieDetails.Rated}</h6>
 					<p>${movieDetails.Plot}</p>
 				</div>
 			</div>
@@ -140,10 +141,6 @@ function movieTemplate(movieDetails) {
 			<p class="title">${movieDetails.Awards}</p>
 			<p class="subtitle">Awards</p>
 		</article>
-		<article data-value="${boxOffice}" class="notification is-primary">
-			<p class="title">${movieDetails.BoxOffice || boxOffice}</p>
-			<p class="subtitle">Box Office</p>
-		</article>
 		<article data-value="${metascore}" class="notification is-primary">
 			<p class="title">${movieDetails.Metascore}</p>
 			<p class="subtitle">Metascore</p>
@@ -152,9 +149,13 @@ function movieTemplate(movieDetails) {
 			<p class="title">${movieDetails.imdbRating}</p>
 			<p class="subtitle">IMDB Rating</p>
 		</article>
-		<article data-value="${imdbVotes}" class="notification is-primary">
-			<p class="title">${movieDetails.imdbVotes}</p>
-			<p class="subtitle">IMDB Votes</p>
+		<article data-value="${rottenTomatoes}" class="notification is-primary">
+			<p class="title">${movieDetails.Ratings[1].Value}</p>
+			<p class="subtitle">Rotten Tomatoes</p>
+		</article>
+		<article data-value="${boxOffice}" class="notification is-primary">
+			<p class="title">${movieDetails.BoxOffice || boxOffice}</p>
+			<p class="subtitle">Box Office</p>
 		</article>
 	`;
 }
