@@ -170,7 +170,9 @@ function movieTemplate(movieDetails) {
 }
 
 // For when rotating screen makes viewport wide enough to display columns side by side
-window.addEventListener('resize', runComparisson);
+window.addEventListener('resize', () => {
+	if (leftMovie && rightMovie) runComparisson();
+});
 
 // CONFIGURATION OBJECT FOR THE AUTOCOMPLETE DROPDOWN COMPONENT ---------------------------------------------
 
