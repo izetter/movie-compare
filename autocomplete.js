@@ -1,3 +1,5 @@
+import {debounce} from './utils.js';
+
 function createAutocomplete({root, fetchData, renderOption, onOptionSelect}) {
 	
 	root.innerHTML = `
@@ -53,3 +55,5 @@ function createAutocomplete({root, fetchData, renderOption, onOptionSelect}) {
 	// Event delegation to update input value with clicked option
 	resultsWrapper.addEventListener('click', onDropdwonClick);
 }
+
+export default createAutocomplete;

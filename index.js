@@ -1,3 +1,5 @@
+import createAutocomplete from './autocomplete.js';
+
 let leftMovie = null;
 let rightMovie = null;
 
@@ -66,21 +68,21 @@ function runComparisson() {
 			const leftElementValue = parseFloat(leftElement.dataset.value);
 			const rightElementValue = parseFloat(rightElement.dataset.value);
 
-			// Because the OMDB API sometimes has no data so it returns a "N/A" string.
+			// Because the OMDB API sometimes has no data so it/we return a "N/A" string.
 			if (isNaN(leftElementValue) || isNaN(rightElementValue)) {
 
-				isNaN(leftElementValue) ? leftElement.classList.add('is-unavailable') : leftElement.classList.add('is-primary');
-				isNaN(rightElementValue) ? rightElement.classList.add('is-unavailable') : rightElement.classList.add('is-primary');
+				isNaN(leftElementValue) ? leftElement.classList.add('is-unavailable') : leftElement.classList.add('is-success');
+				isNaN(rightElementValue) ? rightElement.classList.add('is-unavailable') : rightElement.classList.add('is-success');
 
 			} else if (leftElementValue === rightElementValue) {
-				leftElement.classList.add('is-primary');
-				rightElement.classList.add('is-primary');
+				leftElement.classList.add('is-success');
+				rightElement.classList.add('is-success');
 			} else if (leftElementValue > rightElementValue) {
-				leftElement.classList.add('is-primary');
+				leftElement.classList.add('is-success');
 				rightElement.classList.add('is-warning');
 			} else {
 				leftElement.classList.add('is-warning');
-				rightElement.classList.add('is-primary');
+				rightElement.classList.add('is-success');
 			}
 		}
 		equalizeHeights(leftElement, rightElement);
@@ -107,8 +109,14 @@ function movieTemplate(movieDetails) {
 	const posterSRC = movieDetails.Poster === 'N/A' ? 'poster-not-found.png' : movieDetails.Poster; // The API assings the string "N/A" when no poster URL is found
 	const metascore = parseInt(movieDetails.Metascore);
 	const imdbRating = parseFloat(movieDetails.imdbRating);
-	const rottenTomatoes = parseInt(movieDetails.Ratings[1].Value);
 
+	// Because some OMDB movies don't contain a Rotten Tomatoes property, must default to something to avoid error.
+	console.log(movieDetails.Ratings[1]);
+	const rottenTomatoes = movieDetails.Ratings[1] ? parseInt(movieDetails.Ratings[1].Value) : 'N/A';
+	// const rottenTomatoes = movieDetails.Ratings[1] ? parseInt(movieDetails.Ratings[1].Value) : 'N/A';
+	console.log(rottenTomatoes);
+
+	
 	// Because some OMDB movies don't contain a BoxOffice property, must default to something to avoid error.
 	const boxOffice = movieDetails.BoxOffice ? parseInt(movieDetails.BoxOffice.replace(/[\$,]/g, '')) : 'N/A'; // Replaces any ocurrence of dolar sign or comma charachters with an empty string.
 
@@ -137,23 +145,23 @@ function movieTemplate(movieDetails) {
 			</div>
 		</article>
 
-		<article data-value="${awards}" class="notification is-primary">
+		<article data-value="${awards}" class="notification is-success">
 			<p class="title">${movieDetails.Awards}</p>
 			<p class="subtitle">Awards</p>
 		</article>
-		<article data-value="${metascore}" class="notification is-primary">
+		<article data-value="${metascore}" class="notification is-success">
 			<p class="title">${movieDetails.Metascore}</p>
 			<p class="subtitle">Metascore</p>
 		</article>
-		<article data-value="${imdbRating}" class="notification is-primary">
+		<article data-value="${imdbRating}" class="notification is-success">
 			<p class="title">${movieDetails.imdbRating}</p>
 			<p class="subtitle">IMDB Rating</p>
 		</article>
-		<article data-value="${rottenTomatoes}" class="notification is-primary">
-			<p class="title">${movieDetails.Ratings[1].Value}</p>
+		<article data-value="${rottenTomatoes}" class="notification is-success">
+			<p class="title">${movieDetails.Ratings[1] || rottenTomatoes}</p>
 			<p class="subtitle">Rotten Tomatoes</p>
 		</article>
-		<article data-value="${boxOffice}" class="notification is-primary">
+		<article data-value="${boxOffice}" class="notification is-success">
 			<p class="title">${movieDetails.BoxOffice || boxOffice}</p>
 			<p class="subtitle">Box Office</p>
 		</article>

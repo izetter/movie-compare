@@ -1,5 +1,8 @@
-.instructions {
-	margin: auto;
+header {
+	background-color: #48c78e;
+	color: hsl(0, 0%, 17%);
+	margin-bottom: 4rem;
+	padding: 2.5rem 0 2.5rem 0;
 	text-align: center;
 }
 
@@ -14,10 +17,6 @@ figure .image img {
 .results {
 	max-height: 500px;
 	overflow-y: scroll;
-}
-
-.hero {
-	margin-bottom: 20px;
 }
 
 .dropdown-item {
@@ -36,12 +35,8 @@ figure .image img {
 	color: hsl(0, 0%, 71%);
 }
 
-header {
-	/* background-color: hsl(51, 100%, 47%); */
-	text-align: center;
-	color: hsl(0, 0%, 17%);
-}
-
 .instructions {
 	background-color: hsl(51, 100%, 87%);
+	margin: auto;
+	text-align: center;
 }
