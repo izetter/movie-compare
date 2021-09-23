@@ -1,3 +1,11 @@
+html {
+	box-sizing: border-box;
+}
+
+*, *:before, *:after {
+	box-sizing: inherit;
+}
+
 header {
 	background-color: hsla(153, 53%, 53%, 0.863);
 	color: hsl(0, 0%, 17%);
@@ -28,6 +36,11 @@ figure .image img {
 .dropdown-item img {
 	height: 50px;
 	margin-right: 10px;
+}
+
+.columns {
+	margin-left: 0.1rem;
+	margin-right: 0.1rem;
 }
 
 .is-unavailable {
