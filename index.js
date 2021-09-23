@@ -106,7 +106,7 @@ function equalizeHeights(...args) {
 }
 
 function movieTemplate(movieDetails) {
-	const posterSRC = movieDetails.Poster === 'N/A' ? 'poster-not-found.png' : movieDetails.Poster; // The API assings the string "N/A" when no poster URL is found
+	const posterSRC = movieDetails.Poster === 'N/A' ? './assets/poster-not-found.png' : movieDetails.Poster; // The API assings the string "N/A" when no poster URL is found
 	const metascore = parseInt(movieDetails.Metascore);
 	const imdbRating = parseFloat(movieDetails.imdbRating);
 
