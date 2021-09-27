@@ -53,3 +53,44 @@ figure .image img {
 	margin: auto;
 	text-align: center;
 }
+
+/********* Footer *********/
+
+footer {
+	align-items: flex-end;
+	bottom: 0;
+	display: flex;
+	justify-content: space-between;
+	position: fixed;
+	width: 100%;
+}
+
+.name {
+	font: .8rem 'Courier New', Courier, monospace;
+	margin: 0 0 3px 6px;
+	opacity: .6;
+	text-decoration: none;
+}
+
+.social-icon {
+	margin-right: 6px;
+	opacity: .25;
+	width: 25px;
+}
+
+.name:hover,
+.social-icon:hover {
+	opacity: .85;
+}
+
+@media screen and (max-width: 767px) {
+
+	footer {
+		justify-content: center;
+	}
+
+	.social-icon,
+	.name {
+		display: none;
+	}
+}
