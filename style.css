@@ -7,7 +7,8 @@ html {
 }
 
 header {
-	background-color: hsla(153, 53%, 53%, 0.863);
+	background-color: hsla(308, 53%, 53%, 0.863);
+	background-color: hsla(308, 72%, 44%, 0.863);
 	color: hsl(0, 0%, 17%);
 	margin-bottom: 4rem;
 	padding: 2.5rem 0 2.5rem 0;
